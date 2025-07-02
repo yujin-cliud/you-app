@@ -6,187 +6,132 @@
   <title>英語クイズゲーム</title>
   <style>
     body {
-      font-family: sans-serif;
+      font-family: 'Arial', sans-serif;
+      background: linear-gradient(135deg, #f9d423, #ff4e50);
+      color: #333;
       text-align: center;
       padding: 20px;
-      background: #fdf6e3;
     }
     .quiz-box {
-      background: white;
-      border-radius: 10px;
+      background: #fff;
+      border-radius: 20px;
       padding: 20px;
-      margin-top: 20px;
-      box-shadow: 0 0 10px #aaa;
+      max-width: 500px;
+      margin: 0 auto;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
     }
-    img {
-      max-width: 300px;
-      height: auto;
-      margin-bottom: 15px;
-    }
-    .option {
-      display: block;
-      margin: 10px auto;
+    button {
+      font-size: 18px;
+      margin: 10px;
       padding: 10px 20px;
-      background: #eee;
       border: none;
-      border-radius: 5px;
+      border-radius: 12px;
+      background-color: #4CAF50;
+      color: white;
       cursor: pointer;
     }
-    .option:hover {
-      background: #ccc;
+    button:hover {
+      background-color: #45a049;
     }
-    #result {
-      font-size: 1.2em;
-      margin-top: 10px;
+    .hidden {
+      display: none;
     }
   </style>
 </head>
 <body>
-
   <h1>英語クイズゲーム</h1>
   <div id="start-screen">
     <button onclick="startQuiz()">スタート</button>
   </div>
-
-  <div id="quiz-box" class="quiz-box" style="display:none;">
-    <div id="question-number"></div>
-    <img id="question-image" src="" alt="クイズ画像">
-    <div id="question-text"></div>
-    <div id="options"></div>
-    <div id="result"></div>
+  <div class="quiz-box hidden" id="quiz-box">
+    <p id="question-text"></p>
+    <div id="choices"></div>
+    <p id="feedback"></p>
   </div>
-
-  <div id="end-screen" style="display:none;">
-    <h2>クイズ終了！あなたの点数は <span id="score"></span> 点！</h2>
+  <div id="result-screen" class="hidden">
+    <h2>結果発表！</h2>
+    <p id="score"></p>
     <button onclick="startQuiz()">リトライ</button>
   </div>
 
   <script>
-    const quizData = [
-      {
-        question: "apple の意味は？",
-        image: "https://cdn.pixabay.com/photo/2014/02/01/17/28/apple-256261_1280.jpg",
-        options: ["バナナ", "りんご", "ぶどう", "メロン"],
-        answer: "りんご"
-      },
-      {
-        question: "cat の意味は？",
-        image: "https://cdn.pixabay.com/photo/2017/11/09/21/41/cat-2934720_1280.jpg",
-        options: ["犬", "猫", "鳥", "魚"],
-        answer: "猫"
-      },
-      {
-        question: "dog の意味は？",
-        image: "https://cdn.pixabay.com/photo/2015/03/26/09/54/dog-690176_1280.jpg",
-        options: ["猫", "犬", "馬", "羊"],
-        answer: "犬"
-      },
-      {
-        question: "car の意味は？",
-        image: "https://cdn.pixabay.com/photo/2014/04/03/00/42/car-308618_1280.png",
-        options: ["自転車", "バス", "車", "電車"],
-        answer: "車"
-      },
-      {
-        question: "sun の意味は？",
-        image: "https://cdn.pixabay.com/photo/2012/03/01/00/40/sunset-19627_1280.jpg",
-        options: ["月", "太陽", "星", "空"],
-        answer: "太陽"
-      },
-      {
-        question: "book の意味は？",
-        image: "https://cdn.pixabay.com/photo/2015/09/05/20/02/old-books-925589_1280.jpg",
-        options: ["本", "鉛筆", "机", "紙"],
-        answer: "本"
-      },
-      {
-        question: "water の意味は？",
-        image: "https://cdn.pixabay.com/photo/2017/05/10/21/47/water-2302460_1280.jpg",
-        options: ["火", "水", "空気", "氷"],
-        answer: "水"
-      },
-      {
-        question: "tree の意味は？",
-        image: "https://cdn.pixabay.com/photo/2015/04/23/22/00/tree-736885_1280.jpg",
-        options: ["花", "葉", "木", "土"],
-        answer: "木"
-      },
-      {
-        question: "house の意味は？",
-        image: "https://cdn.pixabay.com/photo/2014/07/10/17/17/house-389271_1280.jpg",
-        options: ["ビル", "アパート", "家", "部屋"],
-        answer: "家"
-      },
-      {
-        question: "bird の意味は？",
-        image: "https://cdn.pixabay.com/photo/2016/11/29/09/22/kingfisher-1866863_1280.jpg",
-        options: ["鳥", "猫", "犬", "蛇"],
-        answer: "鳥"
-      }
+    const questions = [
+      { q: "apple の意味は？", c: ["りんご", "ばなな", "みかん", "ぶどう"], a: 0 },
+      { q: "dog の意味は？", c: ["犬", "猫", "鳥", "馬"], a: 0 },
+      { q: "green の意味は？", c: ["赤", "青", "緑", "黄"], a: 2 },
+      { q: "book の意味は？", c: ["本", "鉛筆", "ノート", "机"], a: 0 },
+      { q: "water の意味は？", c: ["水", "火", "空気", "土"], a: 0 },
+      { q: "sun の意味は？", c: ["太陽", "月", "星", "空"], a: 0 },
+      { q: "car の意味は？", c: ["自転車", "電車", "バス", "車"], a: 3 },
+      { q: "happy の意味は？", c: ["悲しい", "楽しい", "怒ってる", "眠い"], a: 1 },
+      { q: "cold の意味は？", c: ["寒い", "熱い", "暑い", "暖かい"], a: 0 },
+      { q: "cat の意味は？", c: ["犬", "鳥", "猫", "魚"], a: 2 },
+      // 問題は必要に応じて増やしてOK！
     ];
 
-    let currentQuestion = 0;
-    let shuffledQuestions = [];
+    let current = 0;
     let score = 0;
-
-    function shuffle(array) {
-      return array.sort(() => Math.random() - 0.5);
-    }
+    let quizOrder = [];
 
     function startQuiz() {
-      shuffledQuestions = shuffle([...quizData]);
-      currentQuestion = 0;
       score = 0;
-      document.getElementById("start-screen").style.display = "none";
-      document.getElementById("end-screen").style.display = "none";
-      document.getElementById("quiz-box").style.display = "block";
+      current = 0;
+      quizOrder = shuffle([...Array(questions.length).keys()]).slice(0, 10);
+
+      document.getElementById("start-screen").classList.add("hidden");
+      document.getElementById("result-screen").classList.add("hidden");
+      document.getElementById("quiz-box").classList.remove("hidden");
       showQuestion();
     }
 
     function showQuestion() {
-      const q = shuffledQuestions[currentQuestion];
-      document.getElementById("question-number").textContent = `第${currentQuestion + 1}問`;
-      document.getElementById("question-text").textContent = q.question;
-      document.getElementById("question-image").src = q.image;
-      const options = document.getElementById("options");
-      options.innerHTML = "";
-      document.getElementById("result").textContent = "";
+      const q = questions[quizOrder[current]];
+      document.getElementById("question-text").textContent = `${current + 1}問目: ${q.q}`;
+      const choices = document.getElementById("choices");
+      choices.innerHTML = "";
 
-      shuffle(q.options).forEach(opt => {
+      q.c.forEach((choice, i) => {
         const btn = document.createElement("button");
-        btn.textContent = opt;
-        btn.className = "option";
-        btn.onclick = () => checkAnswer(opt);
-        options.appendChild(btn);
+        btn.textContent = choice;
+        btn.onclick = () => checkAnswer(i);
+        choices.appendChild(btn);
       });
+
+      document.getElementById("feedback").textContent = "";
     }
 
-    function checkAnswer(selected) {
-      const correct = shuffledQuestions[currentQuestion].answer;
-      const result = document.getElementById("result");
-      if (selected === correct) {
-        result.textContent = "正解！";
-        result.style.color = "green";
+    function checkAnswer(i) {
+      const correct = questions[quizOrder[current]].a;
+      const feedback = document.getElementById("feedback");
+      if (i === correct) {
         score++;
+        feedback.textContent = "正解！ 🎉";
       } else {
-        result.textContent = `不正解！正解は「${correct}」でした`;
-        result.style.color = "red";
+        feedback.textContent = `不正解 😢 正解は「${questions[quizOrder[current]].c[correct]}」`;
       }
 
       setTimeout(() => {
-        currentQuestion++;
-        if (currentQuestion < 10) {
+        current++;
+        if (current < 10) {
           showQuestion();
         } else {
           showResult();
         }
-      }, 1500);
+      }, 1200);
     }
 
     function showResult() {
-      document.getElementById("quiz-box").style.display = "none";
-      document.getElementById("end-screen").style.display = "block";
-      document.getElementById("score").textContent = `${score} / 10`;
+      document.getElementById("quiz-box").classList.add("hidden");
+      document.getElementById("result-screen").classList.remove("hidden");
+      document.getElementById("score").textContent = `あなたの得点は ${score} / 10 点です！`;
+    }
+
+    function shuffle(array) {
+      for (let i = array.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [array[i], array[j]] = [array[j], array[i]];
+      }
+      return array;
     }
   </script>
 </body>
