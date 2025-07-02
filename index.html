@@ -2,10 +2,101 @@
 <html lang="ja">
 <head>
   <meta charset="UTF-8">
-  <title>テストページ</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>英語クイズ</title>
+  <style>
+    body {
+      font-family: 'Arial', sans-serif;
+      background: linear-gradient(135deg, #fceabb, #f8b500);
+      text-align: center;
+      padding: 20px;
+    }
+    .quiz-box {
+      background: white;
+      border-radius: 20px;
+      padding: 30px;
+      max-width: 500px;
+      margin: auto;
+      box-shadow: 0 0 15px rgba(0,0,0,0.1);
+    }
+    .question {
+      font-size: 20px;
+      margin-bottom: 20px;
+    }
+    .choices button {
+      display: block;
+      width: 100%;
+      margin: 10px 0;
+      padding: 10px;
+      font-size: 18px;
+      border-radius: 10px;
+      border: none;
+      background: #ffd54f;
+      cursor: pointer;
+    }
+    .choices button:hover {
+      background: #ffb300;
+    }
+    #result {
+      margin-top: 20px;
+      font-weight: bold;
+      font-size: 18px;
+    }
+  </style>
 </head>
 <body>
-  <h1>GitHub Pages 成功！</h1>
-  <p>これはテストです。</p>
+  <div class="quiz-box">
+    <div id="question" class="question"></div>
+    <div id="choices" class="choices"></div>
+    <div id="result"></div>
+  </div>
+
+  <script>
+    const quiz = [
+      {
+        question: "りんごは英語で？",
+        choices: ["banana", "grape", "apple", "orange"],
+        correct: 2
+      },
+      {
+        question: "ねこは英語で？",
+        choices: ["dog", "cat", "mouse", "bird"],
+        correct: 1
+      },
+      // 他にもどんどん増やせるよ
+    ];
+
+    let current = 0;
+    let score = 0;
+
+    function showQuestion() {
+      if (current >= quiz.length) {
+        document.getElementById("question").textContent = `終了！スコア：${score} / ${quiz.length}`;
+        document.getElementById("choices").innerHTML = "";
+        return;
+      }
+
+      const q = quiz[current];
+      document.getElementById("question").textContent = q.question;
+
+      const choices = document.getElementById("choices");
+      choices.innerHTML = "";
+
+      q.choices.forEach((choice, i) => {
+        const btn = document.createElement("button");
+        btn.textContent = choice;
+        btn.onclick = () => {
+          if (i === q.correct) {
+            score++;
+          }
+          current++;
+          showQuestion();
+        };
+        choices.appendChild(btn);
+      });
+    }
+
+    showQuestion();
+  </script>
 </body>
 </html>
