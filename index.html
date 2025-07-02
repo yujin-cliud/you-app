@@ -23,7 +23,7 @@
       font-size: 20px;
       margin-bottom: 20px;
     }
-    .choices button {
+    .choices button, #startBtn, #retryBtn {
       display: block;
       width: 100%;
       margin: 10px 0;
@@ -34,7 +34,7 @@
       background: #ffd54f;
       cursor: pointer;
     }
-    .choices button:hover {
+    .choices button:hover, #startBtn:hover, #retryBtn:hover {
       background: #ffb300;
     }
     #result {
@@ -42,13 +42,24 @@
       font-weight: bold;
       font-size: 18px;
     }
+    #quizArea {
+      display: none;
+    }
   </style>
 </head>
 <body>
   <div class="quiz-box">
-    <div id="question" class="question"></div>
-    <div id="choices" class="choices"></div>
-    <div id="result"></div>
+    <div id="startArea">
+      <h2>英語クイズへようこそ！</h2>
+      <button id="startBtn">スタート</button>
+    </div>
+
+    <div id="quizArea">
+      <div id="question" class="question"></div>
+      <div id="choices" class="choices"></div>
+      <div id="result"></div>
+      <button id="retryBtn" style="display: none;">リトライ</button>
+    </div>
   </div>
 
   <script>
@@ -63,24 +74,34 @@
         choices: ["dog", "cat", "mouse", "bird"],
         correct: 1
       },
-      // 他にもどんどん増やせるよ
+      {
+        question: "水は英語で？",
+        choices: ["water", "wine", "milk", "juice"],
+        correct: 0
+      }
     ];
 
     let current = 0;
     let score = 0;
 
+    const questionEl = document.getElementById("question");
+    const choicesEl = document.getElementById("choices");
+    const resultEl = document.getElementById("result");
+    const startArea = document.getElementById("startArea");
+    const quizArea = document.getElementById("quizArea");
+    const retryBtn = document.getElementById("retryBtn");
+
     function showQuestion() {
       if (current >= quiz.length) {
-        document.getElementById("question").textContent = `終了！スコア：${score} / ${quiz.length}`;
-        document.getElementById("choices").innerHTML = "";
+        questionEl.textContent = `終了！スコア：${score} / ${quiz.length}`;
+        choicesEl.innerHTML = "";
+        retryBtn.style.display = "block";
         return;
       }
 
       const q = quiz[current];
-      document.getElementById("question").textContent = q.question;
-
-      const choices = document.getElementById("choices");
-      choices.innerHTML = "";
+      questionEl.textContent = q.question;
+      choicesEl.innerHTML = "";
 
       q.choices.forEach((choice, i) => {
         const btn = document.createElement("button");
@@ -92,11 +113,23 @@
           current++;
           showQuestion();
         };
-        choices.appendChild(btn);
+        choicesEl.appendChild(btn);
       });
     }
 
-    showQuestion();
+    document.getElementById("startBtn").onclick = () => {
+      startArea.style.display = "none";
+      quizArea.style.display = "block";
+      showQuestion();
+    };
+
+    retryBtn.onclick = () => {
+      current = 0;
+      score = 0;
+      retryBtn.style.display = "none";
+      resultEl.textContent = "";
+      showQuestion();
+    };
   </script>
 </body>
 </html>
