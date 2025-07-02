@@ -1,130 +1,193 @@
 <!DOCTYPE html>
 <html lang="ja">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>英語クイズ</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>英語クイズゲーム</title>
   <style>
     body {
-      font-family: 'Arial', sans-serif;
-      background: linear-gradient(135deg, #fceabb, #f8b500);
+      font-family: sans-serif;
       text-align: center;
       padding: 20px;
+      background: #fdf6e3;
     }
     .quiz-box {
       background: white;
-      border-radius: 20px;
-      padding: 30px;
-      max-width: 500px;
-      margin: auto;
-      box-shadow: 0 0 15px rgba(0,0,0,0.1);
-    }
-    .question {
-      font-size: 20px;
-      margin-bottom: 20px;
-    }
-    .choices button, #startBtn, #retryBtn {
-      display: block;
-      width: 100%;
-      margin: 10px 0;
-      padding: 10px;
-      font-size: 18px;
       border-radius: 10px;
+      padding: 20px;
+      margin-top: 20px;
+      box-shadow: 0 0 10px #aaa;
+    }
+    img {
+      max-width: 300px;
+      height: auto;
+      margin-bottom: 15px;
+    }
+    .option {
+      display: block;
+      margin: 10px auto;
+      padding: 10px 20px;
+      background: #eee;
       border: none;
-      background: #ffd54f;
+      border-radius: 5px;
       cursor: pointer;
     }
-    .choices button:hover, #startBtn:hover, #retryBtn:hover {
-      background: #ffb300;
+    .option:hover {
+      background: #ccc;
     }
     #result {
-      margin-top: 20px;
-      font-weight: bold;
-      font-size: 18px;
-    }
-    #quizArea {
-      display: none;
+      font-size: 1.2em;
+      margin-top: 10px;
     }
   </style>
 </head>
 <body>
-  <div class="quiz-box">
-    <div id="startArea">
-      <h2>英語クイズへようこそ！</h2>
-      <button id="startBtn">スタート</button>
-    </div>
 
-    <div id="quizArea">
-      <div id="question" class="question"></div>
-      <div id="choices" class="choices"></div>
-      <div id="result"></div>
-      <button id="retryBtn" style="display: none;">リトライ</button>
-    </div>
+  <h1>英語クイズゲーム</h1>
+  <div id="start-screen">
+    <button onclick="startQuiz()">スタート</button>
+  </div>
+
+  <div id="quiz-box" class="quiz-box" style="display:none;">
+    <div id="question-number"></div>
+    <img id="question-image" src="" alt="クイズ画像">
+    <div id="question-text"></div>
+    <div id="options"></div>
+    <div id="result"></div>
+  </div>
+
+  <div id="end-screen" style="display:none;">
+    <h2>クイズ終了！あなたの点数は <span id="score"></span> 点！</h2>
+    <button onclick="startQuiz()">リトライ</button>
   </div>
 
   <script>
-    const quiz = [
-      { question: "りんごは英語で？", choices: ["banana", "grape", "apple", "orange"], correct: 2 },
-      { question: "ねこは英語で？", choices: ["dog", "cat", "mouse", "bird"], correct: 1 },
-      { question: "水は英語で？", choices: ["water", "wine", "milk", "juice"], correct: 0 },
-      { question: "ありがとうは英語で？", choices: ["hello", "thanks", "bye", "please"], correct: 1 },
-      { question: "赤は英語で？", choices: ["blue", "green", "yellow", "red"], correct: 3 },
-      { question: "魚は英語で？", choices: ["chicken", "fish", "meat", "pork"], correct: 1 },
-      { question: "車は英語で？", choices: ["car", "bus", "bike", "train"], correct: 0 },
-      { question: "犬は英語で？", choices: ["rabbit", "cat", "dog", "tiger"], correct: 2 },
-      { question: "学校は英語で？", choices: ["school", "station", "office", "store"], correct: 0 },
-      { question: "月曜日は英語で？", choices: ["Friday", "Monday", "Tuesday", "Sunday"], correct: 1 },
+    const quizData = [
+      {
+        question: "apple の意味は？",
+        image: "https://cdn.pixabay.com/photo/2014/02/01/17/28/apple-256261_1280.jpg",
+        options: ["バナナ", "りんご", "ぶどう", "メロン"],
+        answer: "りんご"
+      },
+      {
+        question: "cat の意味は？",
+        image: "https://cdn.pixabay.com/photo/2017/11/09/21/41/cat-2934720_1280.jpg",
+        options: ["犬", "猫", "鳥", "魚"],
+        answer: "猫"
+      },
+      {
+        question: "dog の意味は？",
+        image: "https://cdn.pixabay.com/photo/2015/03/26/09/54/dog-690176_1280.jpg",
+        options: ["猫", "犬", "馬", "羊"],
+        answer: "犬"
+      },
+      {
+        question: "car の意味は？",
+        image: "https://cdn.pixabay.com/photo/2014/04/03/00/42/car-308618_1280.png",
+        options: ["自転車", "バス", "車", "電車"],
+        answer: "車"
+      },
+      {
+        question: "sun の意味は？",
+        image: "https://cdn.pixabay.com/photo/2012/03/01/00/40/sunset-19627_1280.jpg",
+        options: ["月", "太陽", "星", "空"],
+        answer: "太陽"
+      },
+      {
+        question: "book の意味は？",
+        image: "https://cdn.pixabay.com/photo/2015/09/05/20/02/old-books-925589_1280.jpg",
+        options: ["本", "鉛筆", "机", "紙"],
+        answer: "本"
+      },
+      {
+        question: "water の意味は？",
+        image: "https://cdn.pixabay.com/photo/2017/05/10/21/47/water-2302460_1280.jpg",
+        options: ["火", "水", "空気", "氷"],
+        answer: "水"
+      },
+      {
+        question: "tree の意味は？",
+        image: "https://cdn.pixabay.com/photo/2015/04/23/22/00/tree-736885_1280.jpg",
+        options: ["花", "葉", "木", "土"],
+        answer: "木"
+      },
+      {
+        question: "house の意味は？",
+        image: "https://cdn.pixabay.com/photo/2014/07/10/17/17/house-389271_1280.jpg",
+        options: ["ビル", "アパート", "家", "部屋"],
+        answer: "家"
+      },
+      {
+        question: "bird の意味は？",
+        image: "https://cdn.pixabay.com/photo/2016/11/29/09/22/kingfisher-1866863_1280.jpg",
+        options: ["鳥", "猫", "犬", "蛇"],
+        answer: "鳥"
+      }
     ];
 
-    let current = 0;
+    let currentQuestion = 0;
+    let shuffledQuestions = [];
     let score = 0;
 
-    const questionEl = document.getElementById("question");
-    const choicesEl = document.getElementById("choices");
-    const resultEl = document.getElementById("result");
-    const startArea = document.getElementById("startArea");
-    const quizArea = document.getElementById("quizArea");
-    const retryBtn = document.getElementById("retryBtn");
+    function shuffle(array) {
+      return array.sort(() => Math.random() - 0.5);
+    }
+
+    function startQuiz() {
+      shuffledQuestions = shuffle([...quizData]);
+      currentQuestion = 0;
+      score = 0;
+      document.getElementById("start-screen").style.display = "none";
+      document.getElementById("end-screen").style.display = "none";
+      document.getElementById("quiz-box").style.display = "block";
+      showQuestion();
+    }
 
     function showQuestion() {
-      if (current >= quiz.length) {
-        questionEl.textContent = `終了！スコア：${score} / ${quiz.length}`;
-        choicesEl.innerHTML = "";
-        retryBtn.style.display = "block";
-        return;
-      }
+      const q = shuffledQuestions[currentQuestion];
+      document.getElementById("question-number").textContent = `第${currentQuestion + 1}問`;
+      document.getElementById("question-text").textContent = q.question;
+      document.getElementById("question-image").src = q.image;
+      const options = document.getElementById("options");
+      options.innerHTML = "";
+      document.getElementById("result").textContent = "";
 
-      const q = quiz[current];
-      questionEl.textContent = `Q${current + 1}. ${q.question}`;
-      choicesEl.innerHTML = "";
-
-      q.choices.forEach((choice, i) => {
+      shuffle(q.options).forEach(opt => {
         const btn = document.createElement("button");
-        btn.textContent = choice;
-        btn.onclick = () => {
-          if (i === q.correct) {
-            score++;
-          }
-          current++;
-          showQuestion();
-        };
-        choicesEl.appendChild(btn);
+        btn.textContent = opt;
+        btn.className = "option";
+        btn.onclick = () => checkAnswer(opt);
+        options.appendChild(btn);
       });
     }
 
-    document.getElementById("startBtn").onclick = () => {
-      startArea.style.display = "none";
-      quizArea.style.display = "block";
-      showQuestion();
-    };
+    function checkAnswer(selected) {
+      const correct = shuffledQuestions[currentQuestion].answer;
+      const result = document.getElementById("result");
+      if (selected === correct) {
+        result.textContent = "正解！";
+        result.style.color = "green";
+        score++;
+      } else {
+        result.textContent = `不正解！正解は「${correct}」でした`;
+        result.style.color = "red";
+      }
 
-    retryBtn.onclick = () => {
-      current = 0;
-      score = 0;
-      retryBtn.style.display = "none";
-      resultEl.textContent = "";
-      showQuestion();
-    };
+      setTimeout(() => {
+        currentQuestion++;
+        if (currentQuestion < 10) {
+          showQuestion();
+        } else {
+          showResult();
+        }
+      }, 1500);
+    }
+
+    function showResult() {
+      document.getElementById("quiz-box").style.display = "none";
+      document.getElementById("end-screen").style.display = "block";
+      document.getElementById("score").textContent = `${score} / 10`;
+    }
   </script>
 </body>
 </html>
