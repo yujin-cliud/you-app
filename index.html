@@ -1,13 +1,8 @@
 <!DOCTYPE html>
 <html lang="ja">
 <head>
-<<<<<<< HEAD
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-=======
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
->>>>>>> 2ea0faf (10問クイズに更新)
   <title>英語クイズ</title>
   <style>
     body {
@@ -69,23 +64,6 @@
 
   <script>
     const quiz = [
-<<<<<<< HEAD
-      {
-        question: "りんごは英語で？",
-        choices: ["banana", "grape", "apple", "orange"],
-        correct: 2
-      },
-      {
-        question: "ねこは英語で？",
-        choices: ["dog", "cat", "mouse", "bird"],
-        correct: 1
-      },
-      {
-        question: "水は英語で？",
-        choices: ["water", "wine", "milk", "juice"],
-        correct: 0
-      }
-=======
       { question: "りんごは英語で？", choices: ["banana", "grape", "apple", "orange"], correct: 2 },
       { question: "ねこは英語で？", choices: ["dog", "cat", "mouse", "bird"], correct: 1 },
       { question: "水は英語で？", choices: ["water", "wine", "milk", "juice"], correct: 0 },
@@ -96,7 +74,6 @@
       { question: "犬は英語で？", choices: ["rabbit", "cat", "dog", "tiger"], correct: 2 },
       { question: "学校は英語で？", choices: ["school", "station", "office", "store"], correct: 0 },
       { question: "月曜日は英語で？", choices: ["Friday", "Monday", "Tuesday", "Sunday"], correct: 1 },
->>>>>>> 2ea0faf (10問クイズに更新)
     ];
 
     let current = 0;
@@ -118,11 +95,7 @@
       }
 
       const q = quiz[current];
-<<<<<<< HEAD
-      questionEl.textContent = q.question;
-=======
       questionEl.textContent = `Q${current + 1}. ${q.question}`;
->>>>>>> 2ea0faf (10問クイズに更新)
       choicesEl.innerHTML = "";
 
       q.choices.forEach((choice, i) => {
